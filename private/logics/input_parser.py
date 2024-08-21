@@ -1,9 +1,11 @@
-from private.constants.constants import DirectionEnum, CommandEnum
+from private.constants.constants import CommandEnum, DirectionEnum
 from private.lib.error import error
 
 
 class InputParser:
-    def parse_field_input(self, field_input_raw: str) -> (tuple[int, int] | None, error):
+    def parse_field_input(
+        self, field_input_raw: str
+    ) -> (tuple[int, int] | None, error):
         inputs: list[str] = field_input_raw.split(" ")
 
         if len(inputs) != 2:
@@ -37,10 +39,15 @@ class InputParser:
 
         return raw_str, None
 
-    def parse_initial_position(self, raw_str: str, width: int, height: int) -> (tuple[int, int, DirectionEnum] | None, error):
+    def parse_initial_position(
+        self, raw_str: str, width: int, height: int
+    ) -> (tuple[int, int, DirectionEnum] | None, error):
         inputs: list[str] = raw_str.split(" ")
         if len(inputs) != 3:
-            return None, "Please enter initial position of car A in x y Direction. Example: '1 2 N'"
+            return (
+                None,
+                "Please enter initial position of car A in x y Direction. Example: '1 2 N'",
+            )
 
         try:
             x: int = int(inputs[0])

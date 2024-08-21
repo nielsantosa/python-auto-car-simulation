@@ -1,17 +1,17 @@
+from private.constants.constants import VERY_LARGE_NUMBER, CommandEnum, DirectionEnum
 from private.models.position import Position
-from private.constants.constants import DirectionEnum, CommandEnum, VERY_LARGE_NUMBER
 
 
 class Car:
     def __init__(
-            self,
-            name: str,
-            commands: list[CommandEnum] = [],
-            position: Position = Position(0, 0),
-            facing: DirectionEnum = DirectionEnum.N,
-            max_x: int = VERY_LARGE_NUMBER,
-            max_y: int = VERY_LARGE_NUMBER,
-        ):
+        self,
+        name: str,
+        commands: list[CommandEnum] = [],
+        position: Position = Position(0, 0),
+        facing: DirectionEnum = DirectionEnum.N,
+        max_x: int = VERY_LARGE_NUMBER,
+        max_y: int = VERY_LARGE_NUMBER,
+    ):
         self.name = name
         self.commands = commands
         self.position = position

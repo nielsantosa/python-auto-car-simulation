@@ -1,10 +1,9 @@
-from typing import TypeAlias
 from private.constants import io_strings
-from private.constants.constants import DirectionEnum, CommandEnum
-from private.models.position import Position
+from private.constants.constants import CommandEnum, DirectionEnum
+from private.logics.input_parser import InputParser
 from private.models.car import Car
 from private.models.field import Field
-from private.logics.input_parser import InputParser
+from private.models.position import Position
 
 
 class Play:
@@ -26,7 +25,9 @@ class Play:
 
     def _select_next_command(self) -> int:
         while True:
-            next_command_raw: str = self._get_input(io_strings.SELECT_ADD_CAR_OR_RUN_SIMULATION_IO_STRING)
+            next_command_raw: str = self._get_input(
+                io_strings.SELECT_ADD_CAR_OR_RUN_SIMULATION_IO_STRING
+            )
             command, err = self.parser.parse_next_command(next_command_raw)
             if err is None:
                 return command
@@ -40,17 +41,25 @@ class Play:
                 return res
             print(err)
 
-    def _get_init_position(self, car_name: str, field: Field) -> [int, int, DirectionEnum]:
+    def _get_init_position(
+        self, car_name: str, field: Field
+    ) -> [int, int, DirectionEnum]:
         while True:
-            raw_input: str = self._get_input(io_strings.ENTER_INITIAL_POSITION_IO_STRING.format(car_name=car_name))
-            res, err = self.parser.parse_initial_position(raw_input, field.width, field.height)
+            raw_input: str = self._get_input(
+                io_strings.ENTER_INITIAL_POSITION_IO_STRING.format(car_name=car_name)
+            )
+            res, err = self.parser.parse_initial_position(
+                raw_input, field.width, field.height
+            )
             if err is None:
                 return res
             print(err)
 
     def _get_car_commands(self, car_name) -> list[CommandEnum]:
         while True:
-            raw_input = self._get_input(io_strings.ENTER_CAR_COMMANDS_IO_STRING.format(car_name=car_name))
+            raw_input = self._get_input(
+                io_strings.ENTER_CAR_COMMANDS_IO_STRING.format(car_name=car_name)
+            )
             res, err = self.parser.parse_car_commands(raw_input)
             if err is None:
                 return res
@@ -68,7 +77,11 @@ class Play:
         while True:
             # initiate field
             field = self._init_field()
-            print(io_strings.FIELD_CREATED_IO_STRING.format(width=field.width, height=field.height))
+            print(
+                io_strings.FIELD_CREATED_IO_STRING.format(
+                    width=field.width, height=field.height
+                )
+            )
 
             # add car
             add_car: bool = True
@@ -98,11 +111,13 @@ class Play:
 
                 print(io_strings.SHOW_CURRENT_LIST_OF_CARS_STRING)
                 for car in self.cars:
-                    print(io_strings.SHOW_CAR_DESCRIPTION.format(
-                        car_name=car.name,
-                        car_details=str(car),
-                        car_commands="".join(car.commands),
-                    ))
+                    print(
+                        io_strings.SHOW_CAR_DESCRIPTION.format(
+                            car_name=car.name,
+                            car_details=str(car),
+                            car_commands="".join(car.commands),
+                        )
+                    )
 
             # run simulation
             run_simulation: bool = True
@@ -140,24 +155,30 @@ class Play:
 
             print("After simulation, the result is:")
             if has_collision:
-                print("{car_name_a}, collides with {car_name_b} at {car_pos} at step {no_step}".format(
-                    car_name_a = collisions_car[0],
-                    car_name_b = collisions_car[1],
-                    car_pos = collisions_pos,
-                    no_step = no_step
-                ))
-                print("{car_name_b}, collides with {car_name_a} at {car_pos} at step {no_step}".format(
-                    car_name_a = collisions_car[0],
-                    car_name_b = collisions_car[1],
-                    car_pos = collisions_pos,
-                    no_step = no_step
-                ))
+                print(
+                    "{car_name_a}, collides with {car_name_b} at {car_pos} at step {no_step}".format(
+                        car_name_a=collisions_car[0],
+                        car_name_b=collisions_car[1],
+                        car_pos=collisions_pos,
+                        no_step=no_step,
+                    )
+                )
+                print(
+                    "{car_name_b}, collides with {car_name_a} at {car_pos} at step {no_step}".format(
+                        car_name_a=collisions_car[0],
+                        car_name_b=collisions_car[1],
+                        car_pos=collisions_pos,
+                        no_step=no_step,
+                    )
+                )
             else:
                 for car in self.cars:
-                    print("- {car_name}, {car_position}".format(
-                        car_name = car.name,
-                        car_position = str(car),
-                    ))
+                    print(
+                        "- {car_name}, {car_position}".format(
+                            car_name=car.name,
+                            car_position=str(car),
+                        )
+                    )
 
             post_simulation_command = self._get_post_simulation_command()
             if post_simulation_command == 2:

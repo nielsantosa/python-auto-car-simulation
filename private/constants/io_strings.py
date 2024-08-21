@@ -9,7 +9,9 @@ SELECT_ADD_CAR_OR_RUN_SIMULATION_IO_STRING = """Please choose from the following
 
 ENTER_CAR_NAME_IO_STRING = "Please enter the name of the car:"
 
-ENTER_INITIAL_POSITION_IO_STRING = "Please enter initial position of car {car_name} in x y Direction format:"
+ENTER_INITIAL_POSITION_IO_STRING = (
+    "Please enter initial position of car {car_name} in x y Direction format:"
+)
 
 ENTER_CAR_COMMANDS_IO_STRING = "Please enter the commands for car {car_name}:"
 
