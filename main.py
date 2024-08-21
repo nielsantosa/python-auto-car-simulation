@@ -1,167 +1,10 @@
 from typing import TypeAlias
 from private.constants import io_strings
-
-
-error: TypeAlias = str | None
-
-
-DIRECTIONS = {"N", "E", "S", "W"}
-COMMANDS = {"L", "R", "F"}
-VERY_LARGE_NUMBER = 9999
-
-
-class Position:
-    def __init__(self, x: int = 0, y: int = 0):
-        self.x = x
-        self.y = y
-
-    def __str__(self):
-        return f"({self.x},{self.y})"
-
-
-class Car:
-    def __init__(
-            self,
-            name: str,
-            commands: list[str] = [],
-            position: Position = Position(0, 0),
-            facing: str = "N",
-            max_x: int = VERY_LARGE_NUMBER,
-            max_y: int = VERY_LARGE_NUMBER,
-        ):
-        self.name = name
-        self.commands = commands
-        self.position = position
-        self.facing = facing
-        self.max_x = max_x
-        self.max_y = max_y
-
-    def __str__(self):
-        return f"{self.position} {self.facing}"
-
-    def run_command(self, command):
-        command_dict = {
-            "L": self._turn_left,
-            "R": self._turn_right,
-            "F": self._move_forward,
-        }
-        command_func = command_dict.get(command)
-        command_func()
-
-    def _turn_left(self):
-        turn_left_dict = {
-            "N": "W",
-            "E": "N",
-            "S": "E",
-            "W": "S",
-        }
-        self.facing = turn_left_dict.get(self.facing)
-
-    def _turn_right(self):
-        turn_left_dict = {
-            "N": "E",
-            "E": "S",
-            "S": "W",
-            "W": "N",
-        }
-        self.facing = turn_left_dict.get(self.facing)
-
-    def _move_forward(self):
-        if self.facing == "N":
-            self.position.y = min(self.position.y + 1, self.max_y)
-            return
-        if self.facing == "E":
-            self.position.x = min(self.position.x + 1, self.max_x)
-            return
-        if self.facing == "S":
-            self.position.y = max(self.position.y - 1, 0)
-            return
-        if self.facing == "W":
-            self.position.x = max(self.position.x - 1, 0)
-            return
-
-
-class Field:
-    def __init__(self, width: int, height: int):
-        self.width = width
-        self.height = height
-
-
-class InputParser:
-    def parse_field_input(self, field_input_raw: str) -> (list[int], error):
-        inputs: list[str] = field_input_raw.split(" ")
-
-        # validate
-        if len(inputs) != 2:
-            return [], "Please insert 'x y'. Example: '10 10'"
-
-        try:
-            width = int(inputs[0])
-            height = int(inputs[1])
-        except Exception as e:
-            return [], "Please insert numbers 'x y'. Example: '10 10'"
-
-        return [width, height], None
-
-    def parse_next_command(self, next_command_raw: str) -> (int | None, error):
-        # validate
-        try:
-            command_num = int(next_command_raw)
-        except Exception as e:
-            return None, "Please insert command '1' or '2'"
-
-        if command_num not in {1, 2}:
-            return None, "Please insert command '1' or '2'"
-
-        return command_num, None
-
-    def parse_car_name(self, car_name_raw: str, car_names: set) -> (str | None, error):
-        if car_name_raw in car_names:
-            return None, "Name exist already. Please choose other name"
-        # validate
-        return car_name_raw, None
-
-    def parse_initial_position(self, raw_str: str, width: int, height: int) -> (list[str], error):
-        # validate
-        inputs: list[str] = raw_str.split(" ")
-        if len(inputs) != 3:
-            return None, "Please enter initial position of car A in x y Direction format:"
-
-        try:
-            x: int = int(inputs[0])
-            y: int = int(inputs[1])
-            dir: string = inputs[2]
-            if x < 0 or x >= width:
-                return None, "x must be gte than 0 or less than width"
-            if y < 0 or y >= height:
-                return None, "y must be gte than 0 less than height"
-            if dir not in DIRECTIONS:
-                return None, "Direction should be 'N', 'E', 'S', 'W' only"
-        except Exception as e:
-            return None, "Please enter initial position of car A in x y Direction format:"
-
-        return [x, y, dir], None
-
-    def parse_car_commands(self, raw_str: str) -> (list[str], error):
-        commands = []
-        for c in raw_str:
-            if c not in COMMANDS:
-                return None, "Characters should be 'F' 'L' or 'R' only"
-            commands.append(c)
-
-        return commands, None
-
-    def parse_post_simulation_command(self, raw_str: str) -> (list[str], error):
-        # validate
-        try:
-            command_num = int(raw_str)
-        except Exception as e:
-            return None, "Please insert command '1' or '2'"
-
-        if command_num not in {1, 2}:
-            return None, "Please insert command '1' or '2'"
-
-        return command_num, None
+from private.constants.constants import DirectionEnum, CommandEnum
+from private.models.position import Position
+from private.models.car import Car
+from private.models.field import Field
+from private.logics.input_parser import InputParser
 
 
 class Play:
@@ -197,7 +40,7 @@ class Play:
                 return res
             print(err)
 
-    def _get_init_position(self, car_name: str, field: Field) -> [int, int, str]:
+    def _get_init_position(self, car_name: str, field: Field) -> [int, int, DirectionEnum]:
         while True:
             raw_input: str = self._get_input(io_strings.ENTER_INITIAL_POSITION_IO_STRING.format(car_name=car_name))
             res, err = self.parser.parse_initial_position(raw_input, field.width, field.height)
@@ -205,7 +48,7 @@ class Play:
                 return res
             print(err)
 
-    def _get_car_commands(self, car_name) -> list[str]:
+    def _get_car_commands(self, car_name) -> list[CommandEnum]:
         while True:
             raw_input = self._get_input(io_strings.ENTER_CAR_COMMANDS_IO_STRING.format(car_name=car_name))
             res, err = self.parser.parse_car_commands(raw_input)
@@ -227,7 +70,7 @@ class Play:
             field = self._init_field()
             print(io_strings.FIELD_CREATED_IO_STRING.format(width=field.width, height=field.height))
 
-            # while add car
+            # add car
             add_car: bool = True
             while add_car:
                 command = self._select_next_command()
@@ -268,6 +111,7 @@ class Play:
             collisions_pos = None
             no_step = 0
             while run_simulation:
+                # assume all cars have stopped
                 run_simulation = False
                 current_pos_dict: dict = {}
                 for car in self.cars:
@@ -320,8 +164,9 @@ class Play:
                 print("Thank you for running the simulation. Goodbye!")
                 break
 
-            # clean cars
+            # reset added cars
             self.cars = []
+
 
 def run():
     game = Play()
