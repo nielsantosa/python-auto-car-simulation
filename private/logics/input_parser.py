@@ -23,7 +23,7 @@ class InputParser:
         try:
             command_num = int(next_command_raw)
         except (ValueError, TypeError):
-            return None, f"Please insert command '1' or '2'"
+            return None, "Please insert command '1' or '2'"
 
         if command_num not in {1, 2}:
             return None, "Please insert command '1' or '2'"
@@ -79,7 +79,7 @@ class InputParser:
         try:
             command_num: int = int(raw_str)
         except (ValueError, TypeError):
-            return None, f"Please insert command '1' or '2'"
+            return None, "Please insert command '1' or '2'"
 
         if command_num not in {1, 2}:
             return None, "Please insert command '1' or '2'"
