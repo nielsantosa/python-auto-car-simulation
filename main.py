@@ -6,7 +6,7 @@ from private.models.field import Field
 from private.models.position import Position
 
 
-class Play:
+class CarSimulation:
     def __init__(self):
         self.cars: list[Car] = []
         self.car_names = set()
@@ -73,9 +73,87 @@ class Play:
                 return res
             print(err)
 
+    def _add_cars_to_field(self, field: Field):
+        while True:
+            command = self._select_next_command()
+            if command == 2:
+                if not self.cars:
+                    print("You haven't added any cars yet. Please add a car first.")
+                    continue
+                break
+
+            car_name = self._get_car_name()
+            pos = self._get_init_position(car_name, field)
+            car_commands = self._get_car_commands(car_name)
+
+            self.car_names.add(car_name)
+            self.cars.append(Car(
+                name=car_name,
+                position=Position(pos[0], pos[1]),
+                facing=pos[2],
+                max_x=field.width,
+                max_y=field.height,
+                commands=car_commands,
+            ))
+
+            self._display_current_cars()
+
+    def _display_current_cars(self):
+        print(io_strings.SHOW_CURRENT_LIST_OF_CARS_STRING)
+        for car in self.cars:
+            print(io_strings.SHOW_CAR_DESCRIPTION.format(
+                car_name=car.name,
+                car_details=str(car),
+                car_commands="".join(car.commands),
+            ))
+
+    def _run_simulation(self):
+        current_pos_dict = {}
+        has_collision = False
+        collisions_car = []
+        collisions_pos = None
+        no_step = 0
+
+        while True:
+            run_simulation = False
+            for car in self.cars:
+                # Check for collisions
+                car_pos_key = str(car.position)
+                if car_pos_key in current_pos_dict:
+                    has_collision = True
+                    collisions_car = [current_pos_dict[car_pos_key], car.name]
+                    collisions_pos = car.position
+                    break
+                current_pos_dict[car_pos_key] = car.name
+
+                # Process commands
+                if car.commands:
+                    run_simulation = True
+                    com = car.commands.pop(0)
+                    car.run_command(com)
+
+            if has_collision:
+                break
+            if not run_simulation:
+                break
+            no_step += 1
+
+        return ((collisions_car, collisions_pos), no_step) if has_collision else (None, no_step)
+
+    def _display_simulation_results(self, collisions, no_step):
+        print("After simulation, the result is:")
+        if collisions:
+            car_name_a, car_name_b = collisions[0]
+            car_pos = collisions[1]
+            print(f"{car_name_a}, collides with {car_name_b} at {car_pos} at step {no_step}")
+            print(f"{car_name_b}, collides with {car_name_a} at {car_pos} at step {no_step}")
+        else:
+            for car in self.cars:
+                print(f"- {car.name}, {str(car)}")
+
     def run(self):
         while True:
-            # initiate field
+            # Initialize field
             field = self._init_field()
             print(
                 io_strings.FIELD_CREATED_IO_STRING.format(
@@ -83,115 +161,26 @@ class Play:
                 )
             )
 
-            # add car
-            add_car: bool = True
-            while add_car:
-                command = self._select_next_command()
-                if command == 2:
-                    if len(self.cars) == 0:
-                        print("You haven't added any car yet. Please add a car first.")
-                        continue
-                    break
+            # Add cars to the field
+            self._add_cars_to_field(field)
 
-                car_name = self._get_car_name()
-                pos = self._get_init_position(car_name, field)
-                car_commands = self._get_car_commands(car_name)
+            # Run the simulation
+            collisions, no_step = self._run_simulation()
+            self._display_simulation_results(collisions, no_step)
 
-                self.car_names.add(car_name)
-                self.cars.append(
-                    Car(
-                        name=car_name,
-                        position=Position(pos[0], pos[1]),
-                        facing=pos[2],
-                        max_x=field.width,
-                        max_y=field.height,
-                        commands=car_commands,
-                    )
-                )
-
-                print(io_strings.SHOW_CURRENT_LIST_OF_CARS_STRING)
-                for car in self.cars:
-                    print(
-                        io_strings.SHOW_CAR_DESCRIPTION.format(
-                            car_name=car.name,
-                            car_details=str(car),
-                            car_commands="".join(car.commands),
-                        )
-                    )
-
-            # run simulation
-            run_simulation: bool = True
-            has_collision = False
-            collisions_car = []
-            collisions_pos = None
-            no_step = 0
-            while run_simulation:
-                # assume all cars have stopped
-                run_simulation = False
-                current_pos_dict: dict = {}
-                for car in self.cars:
-                    # check position first
-                    car_pos_key = str(car.position)
-                    if car_pos_key in current_pos_dict:
-                        has_collision = True
-                        collisions_car = [current_pos_dict[car_pos_key], car.name]
-                        collisions_pos = car.position
-                        break
-                    current_pos_dict[car_pos_key] = car.name
-
-                    # check if car still have commands
-                    if len(car.commands) == 0:
-                        continue
-
-                    # at least 1 car running, still run simulation
-                    run_simulation = True
-                    com = car.commands.pop(0)
-                    car.run_command(com)
-
-                if has_collision:
-                    run_simulation = False
-                    break
-                no_step += 1
-
-            print("After simulation, the result is:")
-            if has_collision:
-                print(
-                    "{car_name_a}, collides with {car_name_b} at {car_pos} at step {no_step}".format(
-                        car_name_a=collisions_car[0],
-                        car_name_b=collisions_car[1],
-                        car_pos=collisions_pos,
-                        no_step=no_step,
-                    )
-                )
-                print(
-                    "{car_name_b}, collides with {car_name_a} at {car_pos} at step {no_step}".format(
-                        car_name_a=collisions_car[0],
-                        car_name_b=collisions_car[1],
-                        car_pos=collisions_pos,
-                        no_step=no_step,
-                    )
-                )
-            else:
-                for car in self.cars:
-                    print(
-                        "- {car_name}, {car_position}".format(
-                            car_name=car.name,
-                            car_position=str(car),
-                        )
-                    )
-
+            # Post-simulation command handling
             post_simulation_command = self._get_post_simulation_command()
             if post_simulation_command == 2:
                 print("Thank you for running the simulation. Goodbye!")
                 break
 
-            # reset added cars
+            # Reset added cars
             self.cars = []
 
 
 def run():
-    game = Play()
-    game.run()
+    simulation = CarSimulation()
+    simulation.run()
 
 
 if __name__ == "__main__":
