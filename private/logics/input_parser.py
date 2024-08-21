@@ -64,7 +64,7 @@ class InputParser:
 
         return (x, y, direction), None
 
-    def parse_car_commands(self, raw_str: str) -> (list[str], error):
+    def parse_car_commands(self, raw_str: str) -> (list[CommandEnum], error):
         commands: list[str] = []
         for c in raw_str:
             try:
