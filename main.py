@@ -1,4 +1,3 @@
-from private.constants import io_strings
 from private.constants.constants import CommandEnum, DirectionEnum
 from private.logics.input_parser import InputParser
 from private.models.car import Car
@@ -17,7 +16,9 @@ class CarSimulation:
 
     def _init_field(self) -> Field:
         while True:
-            raw_input: str = self._get_input(io_strings.WELCOME_IO_STRING)
+            print("Welcome to Auto Driving Car Simulation!")
+            print("Please enter the width and height of the simulation field in x y format:")
+            raw_input: str = input()
             res, err = self.parser.parse_field_input(raw_input)
             if err is None:
                 return Field(width=res[0], height=res[1])
@@ -25,17 +26,19 @@ class CarSimulation:
 
     def _select_next_command(self) -> int:
         while True:
-            next_command_raw: str = self._get_input(
-                io_strings.SELECT_ADD_CAR_OR_RUN_SIMULATION_IO_STRING
-            )
-            command, err = self.parser.parse_next_command(next_command_raw)
+            print("Please choose from the following options:")
+            print("[1] Add a car to field")
+            print("[2] Run simulation")
+            raw_input: str = input()
+            command, err = self.parser.parse_next_command(raw_input)
             if err is None:
                 return command
             print(err)
 
     def _get_car_name(self) -> str:
         while True:
-            raw_input: str = self._get_input(io_strings.ENTER_CAR_NAME_IO_STRING)
+            print("Please enter the name of the car:")
+            raw_input: str = input()
             res, err = self.parser.parse_car_name(raw_input, self.car_names)
             if err is None:
                 return res
@@ -45,9 +48,8 @@ class CarSimulation:
         self, car_name: str, field: Field
     ) -> [int, int, DirectionEnum]:
         while True:
-            raw_input: str = self._get_input(
-                io_strings.ENTER_INITIAL_POSITION_IO_STRING.format(car_name=car_name)
-            )
+            print(f"Please enter initial position of car {car_name} in x y Direction format:")
+            raw_input: str = input()
             res, err = self.parser.parse_initial_position(
                 raw_input, field.width, field.height
             )
@@ -57,9 +59,8 @@ class CarSimulation:
 
     def _get_car_commands(self, car_name) -> list[CommandEnum]:
         while True:
-            raw_input = self._get_input(
-                io_strings.ENTER_CAR_COMMANDS_IO_STRING.format(car_name=car_name)
-            )
+            print(f"Please enter the commands for car {car_name}:")
+            raw_input: str = input()
             res, err = self.parser.parse_car_commands(raw_input)
             if err is None:
                 return res
@@ -67,7 +68,10 @@ class CarSimulation:
 
     def _get_post_simulation_command(self) -> int:
         while True:
-            raw_input = self._get_input(io_strings.SELECT_POST_SIMULATION_COMMAND)
+            print("Please choose from the following options:")
+            print("[1] Start over")
+            print("[2] Exit")
+            raw_input: str = input()
             res, err = self.parser.parse_post_simulation_command(raw_input)
             if err is None:
                 return res
@@ -99,9 +103,9 @@ class CarSimulation:
             self._display_current_cars()
 
     def _display_current_cars(self):
-        print(io_strings.SHOW_CURRENT_LIST_OF_CARS_STRING)
+        print("Your current list of cars are:")
         for car in self.cars:
-            print(io_strings.SHOW_CAR_DESCRIPTION.format(
+            print("- {car_name}, {car_details}, {car_commands}".format(
                 car_name=car.name,
                 car_details=str(car),
                 car_commands="".join(car.commands),
@@ -155,11 +159,7 @@ class CarSimulation:
         while True:
             # Initialize field
             field = self._init_field()
-            print(
-                io_strings.FIELD_CREATED_IO_STRING.format(
-                    width=field.width, height=field.height
-                )
-            )
+            print(f"You have created a field of {field.width} x {field.height}.")
 
             # Add cars to the field
             self._add_cars_to_field(field)
