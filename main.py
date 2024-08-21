@@ -81,15 +81,15 @@ class Car:
             return
 
 
-class Board:
+class Field:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
 
 
 class InputParser:
-    def parse_board_input(self, board_input_raw: str) -> (list[int], error):
-        inputs: list[str] = board_input_raw.split(" ")
+    def parse_field_input(self, field_input_raw: str) -> (list[int], error):
+        inputs: list[str] = field_input_raw.split(" ")
 
         # validate
         if len(inputs) != 2:
@@ -173,13 +173,12 @@ class Play:
     def _get_input(self, text: str) -> str:
         return input(text + "\n")
 
-    def _init_board(self) -> Board:
-        err: str = "something"
+    def _init_field(self) -> Field:
         while True:
-            board_input_raw: str = self._get_input(io_strings.WELCOME_IO_STRING)
-            board_input, err = self.parser.parse_board_input(board_input_raw)
+            raw_input: str = self._get_input(io_strings.WELCOME_IO_STRING)
+            res, err = self.parser.parse_field_input(raw_input)
             if err is None:
-                return Board(width=board_input[0], height=board_input[1])
+                return Field(width=res[0], height=res[1])
             print(err)
 
     def _select_next_command(self) -> int:
@@ -198,10 +197,10 @@ class Play:
                 return res
             print(err)
 
-    def _get_init_position(self, car_name: str, board: Board) -> [int, int, str]:
+    def _get_init_position(self, car_name: str, field: Field) -> [int, int, str]:
         while True:
             raw_input: str = self._get_input(io_strings.ENTER_INITIAL_POSITION_IO_STRING.format(car_name=car_name))
-            res, err = self.parser.parse_initial_position(raw_input, board.width, board.height)
+            res, err = self.parser.parse_initial_position(raw_input, field.width, field.height)
             if err is None:
                 return res
             print(err)
@@ -224,9 +223,9 @@ class Play:
 
     def run(self):
         while True:
-            # initiate board
-            board = self._init_board()
-            print(io_strings.FIELD_CREATED_IO_STRING.format(width=board.width, height=board.height))
+            # initiate field
+            field = self._init_field()
+            print(io_strings.FIELD_CREATED_IO_STRING.format(width=field.width, height=field.height))
 
             # while add car
             add_car: bool = True
@@ -239,7 +238,7 @@ class Play:
                     break
 
                 car_name = self._get_car_name()
-                pos = self._get_init_position(car_name, board)
+                pos = self._get_init_position(car_name, field)
                 car_commands = self._get_car_commands(car_name)
 
                 self.car_names.add(car_name)
@@ -248,8 +247,8 @@ class Play:
                         name=car_name,
                         position=Position(pos[0], pos[1]),
                         facing=pos[2],
-                        max_x=board.width,
-                        max_y=board.height,
+                        max_x=field.width,
+                        max_y=field.height,
                         commands=car_commands,
                     )
                 )
