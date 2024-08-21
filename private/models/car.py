@@ -22,7 +22,7 @@ class Car:
     def __str__(self):
         return f"{self.position} {self.facing}"
 
-    def run_command(self, command):
+    def run_command(self, command: DirectionEnum):
         command_dict = {
             CommandEnum.L: self._turn_left,
             CommandEnum.R: self._turn_right,
