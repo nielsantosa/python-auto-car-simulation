@@ -9,27 +9,27 @@ class Car:
         commands: list[CommandEnum] = [],
         position: Position = Position(0, 0),
         facing: DirectionEnum = DirectionEnum.N,
-        max_x: int = VERY_LARGE_NUMBER,
-        max_y: int = VERY_LARGE_NUMBER,
     ):
         self.name = name
         self.commands = commands
         self.position = position
         self.facing = facing
-        self.max_x = max_x
-        self.max_y = max_y
+        self.is_collision: bool = False
 
     def __str__(self):
         return f"{self.position} {self.facing}"
 
-    def run_command(self, command: DirectionEnum):
-        command_dict = {
-            CommandEnum.L: self._turn_left,
-            CommandEnum.R: self._turn_right,
-            CommandEnum.F: self._move_forward,
-        }
-        command_func = command_dict.get(command)
-        command_func()
+    def run_command(self, command: CommandEnum | None):
+        position = self.position
+
+        if command == CommandEnum.L:
+            self._turn_left()
+        elif command == CommandEnum.R:
+            self._turn_right()
+        elif command == CommandEnum.F:
+            position = self._move_forward()
+
+        return position
 
     def _turn_left(self):
         turn_left_dict = {
@@ -49,12 +49,12 @@ class Car:
         }
         self.facing = turn_right_dict[self.facing]
 
-    def _move_forward(self):
+    def _move_forward(self) -> Position:
         if self.facing == DirectionEnum.N:
-            self.position.y = min(self.position.y + 1, self.max_y)
+            return Position(self.position.x, self.position.y + 1)
         elif self.facing == DirectionEnum.E:
-            self.position.x = min(self.position.x + 1, self.max_x)
+            return Position(self.position.x + 1, self.position.y)
         elif self.facing == DirectionEnum.S:
-            self.position.y = max(self.position.y - 1, 0)
+            return Position(self.position.x, self.position.y - 1)
         elif self.facing == DirectionEnum.W:
-            self.position.x = max(self.position.x - 1, 0)
+            return Position(self.position.x - 1, self.position.y)

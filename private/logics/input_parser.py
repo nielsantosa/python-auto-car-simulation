@@ -1,5 +1,6 @@
 from private.constants.constants import CommandEnum, DirectionEnum
 from private.lib.error import error
+from private.models.position import Position
 
 
 class InputParser:
@@ -40,8 +41,8 @@ class InputParser:
         return raw_str, None
 
     def parse_initial_position(
-        self, raw_str: str, width: int, height: int
-    ) -> (tuple[int, int, DirectionEnum] | None, error):
+        self, raw_str: str, width: int, height: int, init_positions: set[str]
+    ) -> (tuple[Position, DirectionEnum] | None, error):
         inputs: list[str] = raw_str.split(" ")
         if len(inputs) != 3:
             return (
@@ -57,12 +58,16 @@ class InputParser:
                 return None, "x must be gte 0 or lt field's width"
             if not (0 <= y < height):
                 return None, "y must be gte 0 or lt field's height"
+            position = Position(x, y)
+            if str(position) in init_positions:
+                return None, "Position already taken by other car"
+
         except ValueError:
             return None, "Please enter valid integer for x and y"
         except KeyError:
             return None, "Direction should be 'N', 'E', 'S', 'W' only"
 
-        return (x, y, direction), None
+        return (position, direction), None
 
     def parse_car_commands(self, raw_str: str) -> (list[CommandEnum], error):
         commands: list[str] = []
@@ -72,7 +77,6 @@ class InputParser:
             except KeyError:
                 return None, "Characters should be 'F' 'L' or 'R' only"
 
-        print(commands)
         return commands, None
 
     def parse_post_simulation_command(self, raw_str: str) -> (int | None, error):
