@@ -19,7 +19,7 @@ class Car:
     def __str__(self):
         return f"{self.position} {self.facing}"
 
-    def run_command(self, command: CommandEnum | None):
+    def run_command(self, command: CommandEnum | None) -> Position:
         position = self.position
 
         if command == CommandEnum.L:

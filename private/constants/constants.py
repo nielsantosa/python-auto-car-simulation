@@ -21,6 +21,3 @@ class CommandEnum(UpperStrEnum):
     L = auto()
     R = auto()
     F = auto()
-
-
-VERY_LARGE_NUMBER = 9999

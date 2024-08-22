@@ -149,6 +149,9 @@ class CarSimulation:
         for car in [c for c in self.simulation.cars if not c.is_collision]:
             print(f"{car.name}, {car.position} {car.facing}")
 
+    def _clear_simulation(self):
+        self.simulation.clear()
+
     def run(self):
         print("Welcome to Auto Driving Car Simulation!")
 
@@ -165,10 +168,10 @@ class CarSimulation:
 
             # Post-simulation command handling
             post_simulation_command = self._get_post_simulation_command()
+            self._clear_simulation()
             if post_simulation_command == 1:
-                self.simulation.clear()
+                pass
             if post_simulation_command == 2:
-                self.simulation.clear()
                 break
 
         print("Thank you for running the simulation. Goodbye!")

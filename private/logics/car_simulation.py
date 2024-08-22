@@ -9,9 +9,6 @@ class CarSimulationLogic:
         self.cars = cars
         self.car_collision_list: dict[int, list[Car]] = {}
 
-    def _add_car(self, car: Car):
-        self.cars.append(car)
-
     def run_simulation(self):
         """
         Run simulation
