@@ -36,3 +36,8 @@ export PYTHONPATH=<DIRECTORY_TO_THIS_REPO>
 pytest --cov=. tests/
 ```
 
+### Github Actions
+- Enabled Github Actions to simulate a "Deployment" on production level
+- Currently, it's only used to run test cases.
+- On prod, test failures will not proceed with deployment. So the developer can ensure all test cases are passed before deployment
+
