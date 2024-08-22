@@ -1,8 +1,8 @@
 import pytest
 
+from private.constants.constants import CommandEnum, DirectionEnum
 from private.models.car import Car
 from private.models.position import Position
-from private.constants.constants import DirectionEnum, CommandEnum
 
 
 # Test cases

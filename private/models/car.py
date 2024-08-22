@@ -1,4 +1,4 @@
-from private.constants.constants import VERY_LARGE_NUMBER, CommandEnum, DirectionEnum
+from private.constants.constants import CommandEnum, DirectionEnum
 from private.models.position import Position
 
 

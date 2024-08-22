@@ -27,11 +27,17 @@ class CarSimulationLogic:
                 command = car.commands.pop(0) if car.commands else None
                 new_position = car.run_command(command)
 
-                if new_position != car.position and not self.is_colliding_out_of_bound(step, car, new_position):
+                if new_position != car.position and not self.is_colliding_out_of_bound(
+                    step, car, new_position
+                ):
                     car.position = new_position
 
-    def is_colliding_out_of_bound(self, step: int, car: Car, new_position: Position) -> bool:
-        return self.is_colliding(car, step, new_position) or not self.is_within_bounds(new_position)
+    def is_colliding_out_of_bound(
+        self, step: int, car: Car, new_position: Position
+    ) -> bool:
+        return self.is_colliding(car, step, new_position) or not self.is_within_bounds(
+            new_position
+        )
 
     def _initialize_car_list_validity(self):
         for car in self.cars:
@@ -53,7 +59,9 @@ class CarSimulationLogic:
             if car.name != current_car.name and car.position == new_position:
                 car.is_collision = True
                 current_car.is_collision = True
-                current_car.position = new_position  # To ensure the collided cars are in the same position
+                current_car.position = (
+                    new_position  # To ensure the collided cars are in the same position
+                )
                 step_collision_status = True
                 if car not in car_list:
                     car_list.append(car)
@@ -64,7 +72,9 @@ class CarSimulationLogic:
         return step_collision_status
 
     def is_within_bounds(self, position: Position) -> bool:
-        return 0 <= position.x < self.field.width and 0 <= position.y < self.field.height
+        return (
+            0 <= position.x < self.field.width and 0 <= position.y < self.field.height
+        )
 
     def clear(self):
         self.cars.clear()
