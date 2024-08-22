@@ -1,17 +1,29 @@
 import pytest
+
+from private.constants.constants import CommandEnum, DirectionEnum
+from private.logics.car_simulation import CarSimulationLogic
 from private.models.car import Car
 from private.models.field import Field
 from private.models.position import Position
-from private.constants.constants import DirectionEnum, CommandEnum
-from private.logics.car_simulation import CarSimulationLogic
+
 
 class TestCarSimulationLogic:
     @pytest.fixture
     def setup_simulation(self):
         # Setting up a field and cars for tests
         field = Field(10, 10)
-        car1 = Car(name="Car1", commands=[CommandEnum.F, CommandEnum.L], position=Position(5, 5), facing=DirectionEnum.N)
-        car2 = Car(name="Car2", commands=[CommandEnum.F], position=Position(5, 4), facing=DirectionEnum.N)
+        car1 = Car(
+            name="Car1",
+            commands=[CommandEnum.F, CommandEnum.L],
+            position=Position(5, 5),
+            facing=DirectionEnum.N,
+        )
+        car2 = Car(
+            name="Car2",
+            commands=[CommandEnum.F],
+            position=Position(5, 4),
+            facing=DirectionEnum.N,
+        )
         simulation = CarSimulationLogic(field, [car1, car2])
         return simulation, car1, car2
 
@@ -45,7 +57,7 @@ class TestCarSimulationLogic:
         car2.position.y = 6
         car2.facing = DirectionEnum.W
         car1.commands = [CommandEnum.F]  # Will go to (5, 6)
-        car2.commands = [CommandEnum.F]   # Will also go to (5, 6)
+        car2.commands = [CommandEnum.F]  # Will also go to (5, 6)
 
         simulation.run_simulation()
         assert car1.is_collision
@@ -54,7 +66,9 @@ class TestCarSimulationLogic:
 
     def test_out_of_bounds(self):
         field = Field(10, 10)
-        car = Car(name="Car1", position=Position(0, 0), commands=[], facing=DirectionEnum.N)  # Invalid move
+        car = Car(
+            name="Car1", position=Position(0, 0), commands=[], facing=DirectionEnum.N
+        )  # Invalid move
         simulation = CarSimulationLogic(field, [car])
         collision_status = simulation.is_colliding_out_of_bound(1, car, Position(-1, 0))
         assert collision_status
