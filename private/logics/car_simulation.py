@@ -18,7 +18,7 @@ class CarSimulationLogic:
         If got collisions, stop the car for the rest of the simulation
         """
         total_steps = self.get_total_steps()
-        self._initialize_car_list_validity()
+        self.initialize_car_list_validity()
         for step in range(1, total_steps + 1):
             for car in [c for c in self.cars if not c.is_collision]:
                 if car.is_collision:
@@ -39,7 +39,7 @@ class CarSimulationLogic:
             new_position
         )
 
-    def _initialize_car_list_validity(self):
+    def initialize_car_list_validity(self):
         for car in self.cars:
             self.is_colliding_out_of_bound(0, car, car.position)
 
