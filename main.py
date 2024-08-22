@@ -136,6 +136,7 @@ class CarSimulation:
 
     def run(self):
         print("Welcome to Auto Driving Car Simulation!")
+
         while True:
             # Initialize field
             self._get_field()
@@ -152,8 +153,9 @@ class CarSimulation:
             if post_simulation_command == 1:
                 self.simulation.clear()
             if post_simulation_command == 2:
-                print("Thank you for running the simulation. Goodbye!")
                 break
+
+        print("Thank you for running the simulation. Goodbye!")
 
 
 def run():
