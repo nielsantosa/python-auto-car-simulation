@@ -4,7 +4,7 @@ from private.logics.input_parser import InputParser
 from private.models.car import Car
 from private.models.field import Field
 from private.models.position import Position
-from private.io_read_write import IOReadWrite
+from private.lib.io_read_write import IOReadWrite
 
 
 class CarSimulation:
