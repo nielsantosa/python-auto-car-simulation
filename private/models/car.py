@@ -50,6 +50,9 @@ class Car:
         self.facing = turn_right_dict[self.facing]
 
     def _move_forward(self) -> Position:
+        """
+        Peek the next position without changing the instance's position
+        """
         if self.facing == DirectionEnum.N:
             return Position(self.position.x, self.position.y + 1)
         elif self.facing == DirectionEnum.E:

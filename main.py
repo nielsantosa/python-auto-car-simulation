@@ -150,7 +150,7 @@ class CarSimulation:
             # Post-simulation command handling
             post_simulation_command = self._get_post_simulation_command()
             if post_simulation_command == 1:
-                self.simulation.dispose()
+                self.simulation.clear()
             if post_simulation_command == 2:
                 print("Thank you for running the simulation. Goodbye!")
                 break
