@@ -20,6 +20,8 @@ repos:
       - id: ruff
         args:
           - --fix
+          - --ignore
+          - E501  # Ignore line length errors
   - repo: 'https://github.com/pycqa/isort'
     rev: 5.12.0
     hooks:
@@ -33,4 +35,3 @@ repos:
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
   autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
-
