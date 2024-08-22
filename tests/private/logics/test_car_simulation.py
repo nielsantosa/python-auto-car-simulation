@@ -36,8 +36,6 @@ class TestCarSimulationLogic:
     def test_run_simulation_fail_initialize_car_list_validity(self, setup_simulation):
         simulation, car1, car2 = setup_simulation
         car1.position.y = 4  # similar to car2
-        print(car1.position)
-        print(car2.position)
         simulation.run_simulation()
         assert car1.is_collision
         assert car2.is_collision
