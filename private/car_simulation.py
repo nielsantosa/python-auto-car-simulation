@@ -168,6 +168,7 @@ class CarSimulation:
             if post_simulation_command == 1:
                 self.simulation.clear()
             if post_simulation_command == 2:
+                self.simulation.clear()
                 break
 
         print("Thank you for running the simulation. Goodbye!")
