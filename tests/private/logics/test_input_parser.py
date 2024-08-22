@@ -1,6 +1,7 @@
 import pytest
 
 from private.constants.constants import CommandEnum, DirectionEnum
+from private.models.position import Position
 from private.logics.input_parser import InputParser
 
 
@@ -82,7 +83,7 @@ class TestInputParser:
     @pytest.mark.parametrize(
         "raw_str, width, height, expected_result, expected_error",
         [
-            ("1 2 N", 5, 5, (1, 2, DirectionEnum.N), None),  # Test valid input
+            ("1 2 N", 5, 5, (Position(1, 2), DirectionEnum.N), None),  # Test valid input
             (
                 "1 2",
                 5,
@@ -124,7 +125,8 @@ class TestInputParser:
         self, raw_str, width, height, expected_result, expected_error
     ):
         parser = InputParser()
-        result, error = parser.parse_initial_position(raw_str, width, height)
+        initial_positions: set[str] = set()
+        result, error = parser.parse_initial_position(raw_str, width, height, initial_positions)
         assert result == expected_result
         assert error == expected_error
 
