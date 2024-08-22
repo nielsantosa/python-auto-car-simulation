@@ -1,0 +1,26 @@
+[flake8]
+ignore =
+    # E126  Continuation line over-indented for hanging indent
+    E126
+    # E127  Continuation line over-indented for visual indent
+    E127
+    # E128  Continuation line under-indented for visual indent
+    E128
+    # Line break occurred before a binary operator
+    W503
+    # Line break occurred after a binary operator
+    W504
+per-file-ignores =
+    # for __init__, ignore rule for unused import as they are usually imported for other reason.
+    # for __init__, ignore rule for module level import not at top of file. sometimes we need to init some classes first.
+    __init__.py: F401, E402
+
+max-line-length = 120
+exclude =
+    .git,
+    __pycache__,
+    tests/*
+    venv*
+    .venv*
+    env*
+
