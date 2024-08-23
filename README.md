@@ -2,6 +2,7 @@
 
 A programming assignment.
 Refer to README_brief.md for the Assignment Details.
+Refer to ARCHITECTURE.md for explanation about the solution of the Assignment and the explanation about this repo Architecture.
 
 ## Installation and Requirements
 - Python 3.11.1 and above
