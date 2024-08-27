@@ -19,8 +19,15 @@ class Car:
     def __str__(self):
         return f"{self.position} {self.facing}"
 
-    def run_command(self, command: CommandEnum | None) -> Position:
+    def run_command(self, command: CommandEnum | None, step: int) -> Position:
         position = self.position
+
+        REVERSE_COMMAND_DICT = {
+            CommandEnum.L: CommandEnum.R,
+            CommandEnum.R: CommandEnum.L,
+            CommandEnum.F: CommandEnum.B,
+            CommandEnum.B: CommandEnum.F,
+        }
 
         if command == CommandEnum.L:
             self._turn_left()
@@ -28,6 +35,13 @@ class Car:
             self._turn_right()
         elif command == CommandEnum.F:
             position = self._move_forward()
+        elif command == CommandEnum.B:
+            position = self._move_backward()
+        elif command == CommandEnum.U:
+            if (step - 2) < 0:
+                return position
+            prev_command = self.commands[step - 2]
+            return self.run_command(REVERSE_COMMAND_DICT[prev_command], step)
 
         return position
 
@@ -61,3 +75,16 @@ class Car:
             return Position(self.position.x, self.position.y - 1)
         elif self.facing == DirectionEnum.W:
             return Position(self.position.x - 1, self.position.y)
+
+    def _move_backward(self) -> Position:
+        """
+        Peek the next position without changing the instance's position
+        """
+        if self.facing == DirectionEnum.N:
+            return Position(self.position.x, self.position.y - 1)
+        elif self.facing == DirectionEnum.E:
+            return Position(self.position.x - 1, self.position.y)
+        elif self.facing == DirectionEnum.S:
+            return Position(self.position.x, self.position.y + 1)
+        elif self.facing == DirectionEnum.W:
+            return Position(self.position.x + 1, self.position.y)

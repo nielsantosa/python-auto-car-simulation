@@ -21,3 +21,5 @@ class CommandEnum(UpperStrEnum):
     L = auto()
     R = auto()
     F = auto()
+    B = auto()
+    U = auto()
