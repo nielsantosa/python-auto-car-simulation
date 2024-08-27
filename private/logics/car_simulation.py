@@ -1,19 +1,20 @@
+import time
+
+from private.constants.constants import DirectionEnum
 from private.models.car import Car
 from private.models.field import Field
 from private.models.position import Position
-from private.constants.constants import DirectionEnum
-import time
-import os
 
 # For drawing
 BOARD_DICT = {
     DirectionEnum.N: "[↑]",
     DirectionEnum.E: "[→]",
     DirectionEnum.S: "[↓]",
-    DirectionEnum.W: "[←]"
+    DirectionEnum.W: "[←]",
 }
 EMPTY = "[ ]"
 COLLIDED = "[X]"
+
 
 class CarSimulationLogic:
     def __init__(self, field: Field = Field(10, 10), cars: list[Car] = []):
