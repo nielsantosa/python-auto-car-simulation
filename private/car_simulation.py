@@ -1,10 +1,10 @@
 from private.constants.constants import CommandEnum, DirectionEnum
+from private.lib.io_read_write import IOReadWrite
 from private.logics.car_simulation import CarSimulationLogic
 from private.logics.input_parser import InputParser
 from private.models.car import Car
 from private.models.field import Field
 from private.models.position import Position
-from private.lib.io_read_write import IOReadWrite
 
 
 class CarSimulation:
@@ -112,7 +112,9 @@ class CarSimulation:
                 self._add_car_to_simulation()
             elif command == 2:
                 if not self.simulation.cars:
-                    self.io_rw.write_string("You haven't added any cars yet. Please add a car first.")
+                    self.io_rw.write_string(
+                        "You haven't added any cars yet. Please add a car first."
+                    )
                     continue
                 break
 
@@ -133,7 +135,9 @@ class CarSimulation:
         self.io_rw.write_string("Simulation finished running...")
 
     def _display_simulation_results(self):
-        self.io_rw.write_string("After simulation your status of current list of cars are:")
+        self.io_rw.write_string(
+            "After simulation your status of current list of cars are:"
+        )
 
         if self.simulation.car_collision_list and self.simulation.car_collision_list:
             # Iterate through different steps to get the list of cars involved in collisions at each step
